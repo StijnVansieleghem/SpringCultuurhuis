@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns='http://www.springframework.org/schema/beans'
+	xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:context='http://www.springframework.org/schema/context'
+	xmlns:jee='http://www.springframework.org/schema/jee'
+	xmlns:jpa='http://www.springframework.org/schema/data/jpa'
+	xsi:schemaLocation='http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/data/jpa
+http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+http://www.springframework.org/schema/jee
+http://www.springframework.org/schema/jee/spring-jee.xsd'>
+	<context:property-placeholder location='classpath:/spring/database.properties'
+		ignore-unresolvable='true' />
+	<context:component-scan base-package='be.vdab.dao' />
+	
+	<!-- productiecode -->
+	<bean id='dataSource' class='com.mchange.v2.c3p0.ComboPooledDataSource'
+		destroy-method='close'>
+		<property name='driverClass' value='${database.driverClass}' />
+		<property name='jdbcUrl' value='${database.jdbcUrl}' />
+		<property name='user' value='${database.user}' />
+		<property name='password' value='${database.password}' />
+		<property name='maxIdleTime' value='${database.maxIdleTime}' />
+	</bean>
+	
+	
+	<!-- CloudBees config 
+	<jee:jndi-lookup id='dataSource' jndi-name='jdbc/cultuurhuissv'/>
+	-->
+	<bean id="transactionManager" class='org.springframework.orm.jpa.JpaTransactionManager'>
+		<constructor-arg ref='entityManagerFactory' />
+	</bean>
+	<bean id='entityManagerFactory'
+		class='org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean'>
+		<property name='dataSource' ref='dataSource' />
+		<property name='packagesToScan'>
+			<list>
+				<value>be.vdab.entities</value>
+				<value>be.vdab.valueobjects</value>
+			</list>
+		</property>
+		<property name='jpaVendorAdapter'>
+			<bean class='org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter'>
+				<property name='showSql' value='${database.showSql}' />
+			</bean>
+		</property>
+	</bean>
+	<bean
+		class='org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor' />
+	<jpa:repositories base-package='be.vdab.dao' />
+</beans>
