@@ -1,8 +1,5 @@
 package be.vdab.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,13 +15,10 @@ import be.vdab.services.VoorstellingService;
 @Controller
 class ReservatieController {
 	private final VoorstellingService voorstellingService;
-	private final Reservatiemandje reservatiemandje;
 
 	@Autowired
-	public ReservatieController(VoorstellingService voorstellingService,
-			Reservatiemandje reservatiemandje) {
+	public ReservatieController(VoorstellingService voorstellingService) {
 		this.voorstellingService = voorstellingService;
-		this.reservatiemandje = reservatiemandje;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/reserveren")
@@ -37,12 +31,7 @@ class ReservatieController {
 		try {
 			long id = Long.parseLong(parameter);
 			int aantalPlaatsen = 1;
-			if (reservatiemandje.getReservatiemandje() != null) {
-				if (reservatiemandje.getReservatiemandje().containsKey(id)) {
-					aantalPlaatsen = reservatiemandje.getReservatiemandje()
-							.get(id);
-				}
-			}
+
 			ModelAndView modelAndView = new ModelAndView("reserveren",
 					"voorstelling", voorstellingService.read(id));
 			modelAndView.addObject("reservatieForm", new ReservatieForm(
@@ -53,19 +42,14 @@ class ReservatieController {
 		}
 	}
 
+
+
 	@RequestMapping(method = RequestMethod.POST, params = { "voorstellingsNr",
 			"aantalPlaatsen" }, value = "/reserveren")
 	public String reserveerPlaatsen(@RequestParam long voorstellingsNr,
 			@ModelAttribute ReservatieForm reservatieForm,
 			BindingResult bindingResult) {
 		if (!bindingResult.hasErrors()) {
-			Map<Long, Integer> reservatiemand = new HashMap<Long, Integer>();
-			if (reservatiemandje.getReservatiemandje() != null) {
-				reservatiemand = reservatiemandje.getReservatiemandje();
-			}
-			reservatiemand.put(voorstellingsNr,
-					reservatieForm.getAantalPlaatsen());
-			reservatiemandje.setReservatiemandje(reservatiemand);
 			return "redirect:/reservatiemandje";
 		} else {
 			return "redirect:/reserveren/" + voorstellingsNr;

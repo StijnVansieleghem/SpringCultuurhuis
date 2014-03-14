@@ -17,15 +17,12 @@ import be.vdab.services.VoorstellingService;
 class VoorstellingController {
 	private final GenreService genreService;
 	private final VoorstellingService voorstellingService;
-	private final Reservatiemandje reservatiemandje;
 
 	@Autowired
 	public VoorstellingController(GenreService genreService,
-			VoorstellingService voorstellingService,
-			Reservatiemandje reservatiemandje) {
+			VoorstellingService voorstellingService) {
 		this.genreService = genreService;
 		this.voorstellingService = voorstellingService;
-		this.reservatiemandje = reservatiemandje;
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/voorstellingen/{parameter}")
@@ -38,9 +35,9 @@ class VoorstellingController {
 			modelAndView.addObject("huidigGenre", genre);
 			modelAndView.addObject("voorstellingen", voorstellingService
 					.findByGenreAndDatumGreaterThan(genre, new Date()));
-			if (reservatiemandje.getReservatiemandje() != null) {
-				modelAndView.addObject("toonLinkReservatiemandje", "true");
-			}
+//			if (reservatiemandje.getReservatiemandje() != null) {
+//				modelAndView.addObject("toonLinkReservatiemandje", "true");
+//			}
 			return modelAndView;
 		} catch (NumberFormatException ex) {
 			return toonGenres();
@@ -52,9 +49,9 @@ class VoorstellingController {
 	public ModelAndView toonGenres() {
 		ModelAndView modelAndView = new ModelAndView("voorstellingen",
 				"genres", genreService.findAll());
-		if (reservatiemandje.getReservatiemandje() != null) {
-			modelAndView.addObject("toonLinkReservatiemandje", "true");
-		}
+//		if (reservatiemandje.getReservatiemandje() != null) {
+//			modelAndView.addObject("toonLinkReservatiemandje", "true");
+//		}
 		return modelAndView;
 	}
 }

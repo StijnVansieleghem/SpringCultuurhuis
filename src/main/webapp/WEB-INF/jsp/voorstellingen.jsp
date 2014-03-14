@@ -54,7 +54,7 @@
 				<h2>${huidigGenre.naam}&nbsp;voorstellingen</h2>
 				<c:choose>
 					<c:when test="${not empty voorstellingen}">
-						<table class="zebra">
+						<table>
 							<tr>
 								<th class="padded_right">Datum</th>
 								<th class="padded_right">Titel</th>

@@ -61,11 +61,7 @@
 					type="button" value="Zoek me op" />
 			</form>
 			<br />
-			<form action="${bevestig_reservatieURL}" id="frmNieuweGebruiker"
-				method="post" name="frmNieuweGebruiker">
-				<input id="nieuweGebruiker" name="nieuweGebruiker" type="button"
-					value="Ik ben nieuw" />
-			</form>
+			<button id="nieuweGebruiker">Ik ben nieuw</button>
 			<br />
 			<p>
 				<span class="bold" id="gebruikerGegevens"></span>
@@ -73,11 +69,8 @@
 			<ul class="fouten">
 			</ul>
 			<div id="bevestigKnop">
-				<h2>Stap 2:Bevestigen</h2>
-				<form action="${bevestig_reservatieURL}" method="post">
-					<input id="bevestigKnop" name="bevestig" type="submit"
-						value="Bevestigen" />
-				</form>
+				<h2>Stap 2: Bevestigen</h2>
+				<button id="bevestigKnop">Bevestigen</button>
 			</div>
 		</div>
 
@@ -97,70 +90,110 @@
 		src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 	<script>
-		$('document').ready(
-				function() {
-					$('#fouten').hide();
-					$('#bevestigKnop').hide();
-					$('#gebruikerGegevens').hide();
+		$('document')
+				.ready(
+						function() {
+							$('.fouten').hide();
+							$('#bevestigKnop').hide();
+							$('#gebruikerGegevens').hide();
 
-					if (getSessionStorage() !== null) {
-						$('#gebruikerGegevens').html(getSessionStorage());
-						veranderKnoppenIngelogd();
-					}
+							if (getSessionStorage() !== null) {
+								$('#gebruikerGegevens').html(
+										getSessionStorage());
+								veranderKnoppenIngelogd();
+							}
 
-					$('#zoekGebruiker').click(function(event) {
-						loginGebruiker();
-					});
-					
-					$('#nieuweGebruiker').click(function(event) {
-						window.location('nieuwe_klant');
-					});
+							if (window.sessionStorage
+									.getItem('voorstellingsNummers') === null
+									|| window.sessionStorage
+											.getItem('voorstellingsNummers') === '') {
+								$('.fouten')
+										.append(
+												'<li>U kan geen reservaties bevestigen want uw winkelmandje is leeg</li>');
+								$('.fouten').fadeIn(1000);
+							}
 
-					$('#afmelden').click(function(event) {
-						window.localStorage.clear();
-						veranderKnoppenAfgemeld();
-					});
-
-					function loginGebruiker() {
-						if ($('#gebruikersnaamVeld').val() !== ''
-								&& $('#paswoordVeld').val() !== '') {
-							$.post('bevestig_reservatie/'
-									+ $('#gebruikersnaamVeld').val() + '&'
-									+ $('#paswoordVeld').val(), function(data) {
-								if (data !== 'mislukt') {
-									$('#gebruikerGegevens').html(data);
-									window.localStorage.setItem('user', data);
-									veranderKnoppenIngelogd();
-								} else {
-									$('.fouten').append('<li>Foutieve aanmeldgegevens</li>');
-									$('fouten').fadeIn(1000);
-								}
+							$('#zoekGebruiker').click(function(event) {
+								loginGebruiker();
 							});
-						}
-					}
 
-					function veranderKnoppenIngelogd() {
-						$('#gebruikerGegevens').fadeIn(1000);
-						$('#bevestigKnop').fadeIn(1000);
-						$('#gebruikersnaamVeld').prop("disabled", true);
-						$('#paswoordVeld').prop("disabled", true);
-						$('#zoekGebruiker').prop("disabled", true);
-						$('#nieuweGebruiker').prop("disabled", true);
-					}
+							$('#nieuweGebruiker').click(function(event) {
+								window.location = 'nieuwe_klant';
+							});
 
-					function veranderKnoppenAfgemeld() {
-						$('#gebruikerGegevens').hide();
-						$('#bevestigKnop').hide();
-						$('#gebruikersnaamVeld').prop("disabled", false);
-						$('#paswoordVeld').prop("disabled", false);
-						$('#zoekGebruiker').prop("disabled", false);
-						$('#nieuweGebruiker').prop("disabled", false);
-					}
+							$('#bevestigKnop').click(function(event) {
+								bevestigReservaties();
+							});
 
-					function getSessionStorage() {
-						return window.localStorage.getItem('user');
-					}
-				});
+							$('#afmelden').click(function(event) {
+								window.sessionStorage.clear();
+								veranderKnoppenAfgemeld();
+							});
+
+							function loginGebruiker() {
+								if ($('#gebruikersnaamVeld').val() !== ''
+										&& $('#paswoordVeld').val() !== '') {
+									$.post('bevestig_reservatie/'+ $('#gebruikersnaamVeld').val()
+															+ '&'
+															+ $('#paswoordVeld')
+																	.val(),
+													function(data) {
+														if (data !== 'mislukt') {
+															$(
+																	'#gebruikerGegevens')
+																	.html(
+																			<c:out value="data"/>);
+															window.sessionStorage
+																	.setItem(
+																			'user',
+																			data);
+															veranderKnoppenIngelogd();
+														} else {
+															$('.fouten')
+																	.append(
+																			'<li>Foutieve aanmeldgegevens</li>');
+															$('.fouten')
+																	.fadeIn(
+																			1000);
+														}
+													});
+								}
+							}
+							
+							function bevestigReservaties(){
+								//rest service maken om reservaties toe te voegen, in sessionstorage bijhouden welke gelukt of niet gelukt zijn
+								window.location = 'overzicht';
+							}
+
+							function veranderKnoppenIngelogd() {
+								$('#gebruikerGegevens').fadeIn(1000);
+								if (window.sessionStorage
+										.getItem('voorstellingsNummers') !== null
+										&& window.sessionStorage
+												.getItem('voorstellingsNummers') !== '') {
+									$('#bevestigKnop').fadeIn(1000);
+								}
+								$('#gebruikersnaamVeld').prop("disabled", true);
+								$('#paswoordVeld').prop("disabled", true);
+								$('#zoekGebruiker').prop("disabled", true);
+								$('#nieuweGebruiker').prop("disabled", true);
+								$('.fouten').hide();
+							}
+
+							function veranderKnoppenAfgemeld() {
+								$('#gebruikerGegevens').hide();
+								$('#bevestigKnop').hide();
+								$('#gebruikersnaamVeld')
+										.prop("disabled", false);
+								$('#paswoordVeld').prop("disabled", false);
+								$('#zoekGebruiker').prop("disabled", false);
+								$('#nieuweGebruiker').prop("disabled", false);
+							}
+
+							function getSessionStorage() {
+								return window.sessionStorage.getItem('user');
+							}
+						});
 	</script>
 
 	<!-- Bootstrap core JavaScript

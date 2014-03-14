@@ -17,16 +17,21 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "voorstellingen")
+@XmlRootElement
 public class Voorstelling implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private long voorstellingsNr;
 	@Size(min = 1, max = 50)
 	private String titel;
@@ -41,6 +46,7 @@ public class Voorstelling implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GenreNr")
+	@JsonIgnore
 	private Genre genre;
 
 	public Genre getGenre() {
@@ -52,6 +58,7 @@ public class Voorstelling implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "voorstelling")
+	@JsonIgnore
 	private Set<Reservatie> reservaties;
 
 	public Set<Reservatie> getReservaties() {
