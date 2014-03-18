@@ -44,24 +44,26 @@
 			<ul class="nav nav-justified">
 				<li><a href="${voorstellingenURL}" title="Voorstellingen">Voorstellingen</a></li>
 				<li><a href="${reservatiemandjeURL}" title="Reservatiemandje">Reservatiemandje</a></li>
-				<li><a href="<c:url value='/j_spring_security_logout'/>"
+				<li id="afmeldKnop"><a href="<c:url value='/j_spring_security_logout'/>"
 					id="afmelden" title="Afmelden">Afmelden</a></li>
 			</ul>
 		</div>
 
 		<div class="row">
 			<h2>Stap 1: wie ben je?</h2>
-			<form action="<c:url value="/j_spring_security_check"/>"
-				id="frmZoekGebruiker" method="post" name="frmZoekGebruiker">
-				<label>Gebruikersnaam:<br /> <input maxlength="50"
-					id="gebruikersnaamVeld" name="j_username" type="text" autofocus
-					required /></label><br /> <label>Paswoord<br /> <input
-					maxlength="50" id="paswoordVeld" name="j_password" type="password"
-					required /></label><br /> <input id="zoekGebruiker" name="zoekGebruiker"
-					type="button" value="Zoek me op" />
-			</form>
-			<br />
-			<button id="nieuweGebruiker">Ik ben nieuw</button>
+			<div id="gebruiker">
+				<form action="<c:url value="/j_spring_security_check"/>"
+					id="frmZoekGebruiker" method="post" name="frmZoekGebruiker">
+					<label>Gebruikersnaam:<br /> <input maxlength="50"
+						id="gebruikersnaamVeld" name="j_username" type="text" autofocus
+						required /></label><br /> <label>Paswoord<br /> <input
+						maxlength="50" id="paswoordVeld" name="j_password" type="password"
+						required /></label><br /> <input id="zoekGebruiker" name="zoekGebruiker"
+						type="button" value="Zoek me op" />
+				</form>
+				<br />
+				<button id="nieuweGebruiker">Ik ben nieuw</button>
+			</div>
 			<br />
 			<p>
 				<span class="bold" id="gebruikerGegevens"></span>
@@ -96,6 +98,7 @@
 							$('.fouten').hide();
 							$('#bevestigKnop').hide();
 							$('#gebruikerGegevens').hide();
+							$('#afmeldKnop').hide();
 
 							if (getSessionStorage() !== null) {
 								$('#gebruikerGegevens').html(
@@ -127,42 +130,34 @@
 
 							$('#afmelden').click(function(event) {
 								window.sessionStorage.clear();
-								veranderKnoppenAfgemeld();
 							});
 
 							function loginGebruiker() {
 								if ($('#gebruikersnaamVeld').val() !== ''
 										&& $('#paswoordVeld').val() !== '') {
-									$.post('bevestig_reservatie/'+ $('#gebruikersnaamVeld').val()
-															+ '&'
-															+ $('#paswoordVeld')
-																	.val(),
-													function(data) {
-														if (data !== 'mislukt') {
-															$(
-																	'#gebruikerGegevens')
-																	.html(
-																			<c:out value="data"/>);
-															window.sessionStorage
-																	.setItem(
-																			'user',
-																			data);
-															veranderKnoppenIngelogd();
-														} else {
-															$('.fouten')
-																	.append(
-																			'<li>Foutieve aanmeldgegevens</li>');
-															$('.fouten')
-																	.fadeIn(
-																			1000);
-														}
-													});
+									$.get('bevestig_reservatie/' + $('#gebruikersnaamVeld').val() + '&' + $('#paswoordVeld').val(),
+										function(data) {
+											if (data !== 'mislukt') {
+												$('#gebruikerGegevens').html(<c:out value="data"/>);
+												window.sessionStorage.setItem('user',data);
+												veranderKnoppenIngelogd();
+											} else {
+												$('.fouten').append('<li>Foutieve aanmeldgegevens</li>');
+												$('.fouten').fadeIn(1000);
+											}
+										});
 								}
 							}
-							
-							function bevestigReservaties(){
-								//rest service maken om reservaties toe te voegen, in sessionstorage bijhouden welke gelukt of niet gelukt zijn
-								window.location = 'overzicht';
+
+							function bevestigReservaties() {
+								var combinatieVoorstellingsNummersAantalPlaatsen = window.sessionStorage.getItem('voorstellingsNummers') + '&' + window.sessionStorage.getItem('aantalPlaatsen');
+								
+								//data bevat gelukte & mislukte reservaties
+								$.post('bevestig_reservatie/' + combinatieVoorstellingsNummersAantalPlaatsen,
+										function(data){
+											console.log(data);
+								});
+								//window.location = 'overzicht';
 							}
 
 							function veranderKnoppenIngelogd() {
@@ -173,21 +168,9 @@
 												.getItem('voorstellingsNummers') !== '') {
 									$('#bevestigKnop').fadeIn(1000);
 								}
-								$('#gebruikersnaamVeld').prop("disabled", true);
-								$('#paswoordVeld').prop("disabled", true);
-								$('#zoekGebruiker').prop("disabled", true);
-								$('#nieuweGebruiker').prop("disabled", true);
+								$('#gebruiker').hide();
 								$('.fouten').hide();
-							}
-
-							function veranderKnoppenAfgemeld() {
-								$('#gebruikerGegevens').hide();
-								$('#bevestigKnop').hide();
-								$('#gebruikersnaamVeld')
-										.prop("disabled", false);
-								$('#paswoordVeld').prop("disabled", false);
-								$('#zoekGebruiker').prop("disabled", false);
-								$('#nieuweGebruiker').prop("disabled", false);
+								$('#afmeldKnop').show();
 							}
 
 							function getSessionStorage() {

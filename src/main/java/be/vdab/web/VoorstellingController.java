@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import be.vdab.entities.Genre;
 import be.vdab.services.GenreService;
 import be.vdab.services.VoorstellingService;
+import be.vdab.web.clients.TestClient;
 
 @Controller
 class VoorstellingController {
@@ -35,9 +36,9 @@ class VoorstellingController {
 			modelAndView.addObject("huidigGenre", genre);
 			modelAndView.addObject("voorstellingen", voorstellingService
 					.findByGenreAndDatumGreaterThan(genre, new Date()));
-//			if (reservatiemandje.getReservatiemandje() != null) {
-//				modelAndView.addObject("toonLinkReservatiemandje", "true");
-//			}
+			// if (reservatiemandje.getReservatiemandje() != null) {
+			// modelAndView.addObject("toonLinkReservatiemandje", "true");
+			// }
 			return modelAndView;
 		} catch (NumberFormatException ex) {
 			return toonGenres();
@@ -49,9 +50,9 @@ class VoorstellingController {
 	public ModelAndView toonGenres() {
 		ModelAndView modelAndView = new ModelAndView("voorstellingen",
 				"genres", genreService.findAll());
-//		if (reservatiemandje.getReservatiemandje() != null) {
-//			modelAndView.addObject("toonLinkReservatiemandje", "true");
-//		}
+		// if (reservatiemandje.getReservatiemandje() != null) {
+		// modelAndView.addObject("toonLinkReservatiemandje", "true");
+		// }
 		return modelAndView;
 	}
 }

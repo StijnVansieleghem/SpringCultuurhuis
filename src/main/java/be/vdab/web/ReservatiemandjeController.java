@@ -1,11 +1,5 @@
 package be.vdab.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,41 +30,6 @@ class ReservatiemandjeController {
 	@RequestMapping(value = "{voorstellingsNummer}", method = RequestMethod.GET)
 	public @ResponseBody Voorstelling getVoorstelling(@PathVariable String voorstellingsNummer){
 		return voorstellingService.read(Long.parseLong(voorstellingsNummer));
-	}
-
-	@RequestMapping(value = "{combinatieVoorstellingsNummersAantalPlaatsen}", method = RequestMethod.POST)
-	@ResponseBody
-	String toonReservatiemandje(
-			@PathVariable String combinatieVoorstellingsNummersAantalPlaatsen) {
-		int index = combinatieVoorstellingsNummersAantalPlaatsen.indexOf('&');
-
-		String voorstellingsNummersGescheidenDoorKomma = combinatieVoorstellingsNummersAantalPlaatsen
-				.substring(0, index);
-		String aantalPlaatsenGescheidenDoorKomma = combinatieVoorstellingsNummersAantalPlaatsen
-				.substring(index + 1);
-
-		List<String> voorstellingsNummers = Arrays
-				.asList(voorstellingsNummersGescheidenDoorKomma.split(","));
-		List<String> aantalPlaatsen = Arrays
-				.asList(aantalPlaatsenGescheidenDoorKomma.split(","));
-
-		List<Long> voorstellingsNrs = new ArrayList<Long>();
-		List<Integer> aantalPlaatsenNrs = new ArrayList<Integer>();
-		for (int i = 0; i <= voorstellingsNummers.size() - 1; i++) {
-			voorstellingsNrs.add(Long.parseLong(voorstellingsNummers.get(i)));
-			aantalPlaatsenNrs
-					.add(Integer.parseInt(aantalPlaatsen.get(i)));
-		}
-
-		List<Voorstelling> voorstellingen = (ArrayList<Voorstelling>) voorstellingService
-				.findAll(voorstellingsNrs);
-		Map<Voorstelling, Integer> reservatiemandje = new HashMap<Voorstelling, Integer>();
-		
-		for (int i = 0; i <= voorstellingen.size() - 1; i++) {	
-			reservatiemandje.put(voorstellingen.get(i),
-					aantalPlaatsenNrs.get(i));
-		}
-		return "";
 	}
 
 	// @RequestMapping(value = "getTotaalPrijs", method = RequestMethod.GET)

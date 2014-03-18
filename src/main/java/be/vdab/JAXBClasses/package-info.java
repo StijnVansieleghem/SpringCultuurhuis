@@ -1,0 +1,2 @@
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://springcultuurhuis.stijnvansieleghem.cloudbees.net/schemas", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, xmlns = { @javax.xml.bind.annotation.XmlNs(namespaceURI = "http://springcultuurhuis.stijnvansieleghem.cloudbees.net/schemas", prefix = "sch") })
+package be.vdab.JAXBClasses;

@@ -76,8 +76,8 @@
 					commandName="reservatieForm">
 					<form:label path="aantalPlaatsen">Plaatsen: </form:label>
 					<br />
-					<form:input path="aantalPlaatsen" id="aantalPlaatsen" type="number" min="1"
-						max="${voorstelling.vrijePlaatsen}" maxlength="4" size="4"
+					<form:input path="aantalPlaatsen" id="aantalPlaatsen" type="number"
+						min="1" max="${voorstelling.vrijePlaatsen}" maxlength="4" size="4"
 						autofocus="autofocus" required="required" />
 					<br />
 					<input id="voorstellingsNr" name="voorstellingsNr" type="hidden"
@@ -102,46 +102,79 @@
 	<!-- /container -->
 
 	<script
-		src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+	<script
+		src="https://raw.github.com/andris9/jStorage/master/jstorage.js"></script>
 
 	<script>
-		$('document').ready(function(){
-			$('#submit').click(function(event){
-				if ($('#voorstellingsNr').val() !== ''
-					&& $('#aantalPlaatsen').val() !== '') {
-					setReservatiemandje();
-				}
-			});
-			
-			function setReservatiemandje() {
-				var voorstellingsNummers = window.sessionStorage.getItem('voorstellingsNummers');
-				var aantalPlaatsen = window.sessionStorage.getItem('aantalPlaatsen');
-				
-				if(voorstellingsNummers !== null && aantalPlaatsen !== null){
-					var arrVoorstellingsNummers = [];
-					arrVoorstellingsNummers = voorstellingsNummers.split(',');
-					var arrAantalPlaatsen = [];
-					arrAantalPlaatsen = aantalPlaatsen.split(',');
-					
-					var positie = $.inArray($('#voorstellingsNr').val() , arrVoorstellingsNummers);
-					
-					if(positie === -1){
-						voorstellingsNummers += ',' + $('#voorstellingsNr').val();
-						window.sessionStorage.setItem('voorstellingsNummers', voorstellingsNummers);
-						aantalPlaatsen += ',' + $('#aantalPlaatsen').val();
-						window.sessionStorage.setItem('aantalPlaatsen', aantalPlaatsen);
-						i++;	
-					}else{
-						arrAantalPlaatsen[positie] = $('#aantalPlaatsen').val();
-						window.sessionStorage.setItem('aantalPlaatsen', arrAantalPlaatsen.join());
+		$('document').ready(
+				function() {
+					var voorstellingsNummers = window.sessionStorage
+							.getItem('voorstellingsNummers');
+					var aantalPlaatsen = window.sessionStorage
+							.getItem('aantalPlaatsen');
+					if (voorstellingsNummers != null) {
+						var arrVoorstellingsNummers = [];
+						arrVoorstellingsNummers = voorstellingsNummers
+								.split(',');
+						var arrAantalPlaatsen = [];
+						arrAantalPlaatsen = aantalPlaatsen.split(',');
+
+						var positie = arrVoorstellingsNummers.indexOf($(
+								'#voorstellingsNr').val());
+						$('#aantalPlaatsen').val(arrAantalPlaatsen[positie]);
 					}
 
-				}else{
-					window.sessionStorage.setItem('voorstellingsNummers',$('#voorstellingsNr').val());
-					window.sessionStorage.setItem('aantalPlaatsen',$('#aantalPlaatsen').val());
-				}
-			}
-		});
+					$('#submit').click(
+							function(event) {
+								if ($('#voorstellingsNr').val() !== ''
+										&& $('#aantalPlaatsen').val() !== '') {
+									setReservatiemandje(voorstellingsNummers,
+											aantalPlaatsen);
+								}
+							});
+
+					function setReservatiemandje(voorstellingsNummers,
+							aantalPlaatsen) {
+						if (voorstellingsNummers !== null
+								&& aantalPlaatsen !== null) {
+							var arrVoorstellingsNummers = [];
+							arrVoorstellingsNummers = voorstellingsNummers
+									.split(',');
+							var arrAantalPlaatsen = [];
+							arrAantalPlaatsen = aantalPlaatsen.split(',');
+
+							var positie = arrVoorstellingsNummers.indexOf($(
+									'#voorstellingsNr').val());
+
+							if (positie === -1) {
+								voorstellingsNummers += ','
+										+ $('#voorstellingsNr').val();
+								window.sessionStorage.setItem(
+										'voorstellingsNummers',
+										voorstellingsNummers);
+								aantalPlaatsen += ','
+										+ $('#aantalPlaatsen').val();
+								window.sessionStorage.setItem('aantalPlaatsen',
+										aantalPlaatsen);
+								i++;
+							} else {
+								arrAantalPlaatsen[positie] = $(
+										'#aantalPlaatsen').val();
+								window.sessionStorage.setItem('aantalPlaatsen',
+										arrAantalPlaatsen.join());
+							}
+						} else {
+							window.sessionStorage.setItem(
+									'voorstellingsNummers', $(
+											'#voorstellingsNr').val());
+							window.sessionStorage.setItem('aantalPlaatsen', $(
+									'#aantalPlaatsen').val());
+						}
+					}
+					;
+				});
 	</script>
 
 	<!-- Bootstrap core JavaScript

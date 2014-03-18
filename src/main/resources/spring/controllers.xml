@@ -44,4 +44,13 @@ http://www.springframework.org/schema/task/spring-task.xsd">
 		<property name='password' value='${mailserver.password}' />
 	</bean>
 	<task:annotation-driven />
+
+	<beans>
+		<bean id="messageFactory"
+			class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+		<bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate">
+			<constructor-arg ref="messageFactory" />
+			<property name="defaultUri" value="http://example.com/WebService" />
+		</bean>
+	</beans>
 </beans>

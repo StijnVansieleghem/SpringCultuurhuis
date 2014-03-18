@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
@@ -30,10 +32,12 @@ import be.vdab.web.NieuweKlantForm;
 @SuppressWarnings("deprecation")
 @Entity
 @Table(name = "klanten")
+@XmlRootElement
 public class Klant extends Adres implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
+	@XmlTransient
 	private long klantNr;
 	@Size(min = 2, max = 50)
 	private String voornaam;
@@ -49,8 +53,10 @@ public class Klant extends Adres implements Serializable {
 	@Valid
 	private Email email;
 	@Transient
+	@XmlTransient
 	private String authorities;
 	@OneToMany(mappedBy = "klant")
+	@XmlTransient
 	private Set<Reservatie> reservaties;
 
 	public Set<Reservatie> getReservaties() {

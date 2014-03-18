@@ -32,8 +32,6 @@
 
 <body>
 	<c:url value="voorstellingen" var="voorstellingURL" />
-	<c:url value="reservatiemandje" var="reservatiemandjeURL" />
-	<c:url value="bevestig_reservatie" var="bevestig_reservatieURL" />
 	<div class="container">
 		<div class="masthead">
 			<h3 class="text-muted">
@@ -104,7 +102,8 @@
 	</div>
 	<!-- /container -->
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script>
 		$('.row').hide();
 		$(document).ready(function() {
