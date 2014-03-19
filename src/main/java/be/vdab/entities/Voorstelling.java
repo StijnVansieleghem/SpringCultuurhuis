@@ -17,7 +17,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
@@ -26,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "voorstellingen")
-@XmlRootElement
 public class Voorstelling implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -42,6 +40,7 @@ public class Voorstelling implements Serializable {
 	private Date datum;
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal prijs;
+	@JsonIgnore
 	private int vrijePlaatsen;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -150,5 +149,10 @@ public class Voorstelling implements Serializable {
 	@Override
 	public int hashCode() {
 		return titel.toLowerCase().hashCode();
+	}
+	
+	@Override
+	public String toString(){
+		return "Voorstellingsnr: " + getVoorstellingsNr() + " Titel: " + getTitel();
 	}
 }

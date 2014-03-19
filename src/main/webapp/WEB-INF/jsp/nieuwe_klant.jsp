@@ -55,15 +55,17 @@
 					<form:label path="voornaam">Voornaam:</form:label>
 					<br />
 					<form:input path="voornaam" size="50" type="text"
-						value="${voornaam}" autofocus="autofocus" pattern=".{2,50}" title="Moet tussen 2 en 50 tekens bevatten"
-						maxlength="50" required="required" />
+						value="${voornaam}" autofocus="autofocus" pattern=".{2,50}"
+						title="Moet tussen 2 en 50 tekens bevatten" maxlength="50"
+						required="required" />
 					<br />
 					<form:errors path='voornaam' cssClass='fouten' />
 					<br />
 					<form:label path="familienaam">Familienaam:</form:label>
 					<br />
 					<form:input path="familienaam" size="50" type="text"
-						value="${familienaam}" pattern=".{2,50}" title="Moet tussen 2 en 50 tekens bevatten" maxlength="50"
+						value="${familienaam}" pattern=".{2,50}"
+						title="Moet tussen 2 en 50 tekens bevatten" maxlength="50"
 						required="required" />
 					<br />
 					<form:errors path='familienaam' cssClass='fouten' />
@@ -77,23 +79,24 @@
 					<br />
 					<form:label path="huisNr">Huisnr:</form:label>
 					<br />
-					<form:input path="huisNr" size="50" maxlength="6"
-						type="text" value="${huisNr}" required="required" />
+					<form:input path="huisNr" size="50" maxlength="6" type="text"
+						value="${huisNr}" required="required" />
 					<br />
 					<form:errors path='huisNr' cssClass='fouten' />
 					<br />
 					<form:label path="postcode">Postcode:</form:label>
 					<br />
 					<form:input path="postcode" size="50" maxlength="6" min="1000"
-						max="9000" type="number" value="${postcode}" pattern="^([1-8]{1}[0-9]{3}|9000)$" title="Moet tussen 1000 en 9000 liggen" required="required" />
+						max="9000" type="number" value="${postcode}"
+						pattern="^([1-8]{1}[0-9]{3}|9000)$"
+						title="Moet tussen 1000 en 9000 liggen" required="required" />
 					<br />
 					<form:errors path='postcode' cssClass='fouten' />
 					<br />
 					<form:label path="gemeente">Gemeente:</form:label>
 					<br />
 					<form:input path="gemeente" size="50" type="text"
-						value="${gemeente}" maxlength="50"
-						required="required" />
+						value="${gemeente}" maxlength="50" required="required" />
 					<br />
 					<form:errors path='gemeente' cssClass='fouten' />
 					<br />
@@ -107,8 +110,7 @@
 					<form:label path="gebruikersnaam">Gebruikersnaam:</form:label>
 					<br />
 					<form:input path="gebruikersnaam" size="50" type="text"
-						value="${gebruikersnaam}" maxlength="50"
-						required="required" />
+						value="${gebruikersnaam}" maxlength="50" title="Mag alle tekens bevatten en moet tussen 1 en 50 tekens zijn." required="required" />
 					<c:if test="${not empty gebruikersnaamFout}">
 						<br />
 						<span class="fouten">${gebruikersnaamFout}</span>
@@ -134,7 +136,7 @@
 					<br />
 					<form:errors path='herhaalPaswoord' cssClass='fouten' />
 					<br />
-					<input class="submit" name="submit" type="submit" value="OK" />
+					<input class="submit" name="submit" type="submit" value="Registreren" />
 				</form:form>
 			</c:if>
 			<c:if test="${not empty fouten}">
@@ -158,7 +160,27 @@
 	</div>
 	<!-- /container -->
 
+	<script
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<script
+		src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 
+<script>
+//TODO: validatie
+$('document').ready(function() {
+	$('#nieuweKlantForm').validate({
+		rules:{
+			
+		},
+		messages:{
+			
+		},
+		submitHandler: function(form){
+			form.submit();
+		}
+	});
+});
+</script>
 	<!-- Bootstrap core JavaScript
     ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->

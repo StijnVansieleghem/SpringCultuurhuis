@@ -89,7 +89,9 @@
 	<!-- /container -->
 
 	<script
-		src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+	<script src="${contextPath}/js/jstorage.js"></script>
 
 	<script>
 		$('document')
@@ -106,10 +108,8 @@
 								veranderKnoppenIngelogd();
 							}
 
-							if (window.sessionStorage
-									.getItem('voorstellingsNummers') === null
-									|| window.sessionStorage
-											.getItem('voorstellingsNummers') === '') {
+							if ($.jStorage.get('voorstellingsNummers') === null
+									|| $.jStorage.get('voorstellingsNummers') === '') {
 								$('.fouten')
 										.append(
 												'<li>U kan geen reservaties bevestigen want uw winkelmandje is leeg</li>');
@@ -129,7 +129,7 @@
 							});
 
 							$('#afmelden').click(function(event) {
-								window.sessionStorage.clear();
+								$.jStorage.flush();
 							});
 
 							function loginGebruiker() {
@@ -139,18 +139,19 @@
 										function(data) {
 											if (data !== 'mislukt') {
 												$('#gebruikerGegevens').html(<c:out value="data"/>);
-												window.sessionStorage.setItem('user',data);
+												//login session expires na 20 minuten
+												$.jStorage.set('user',data,{TTL: 1200000});
 												veranderKnoppenIngelogd();
 											} else {
 												$('.fouten').append('<li>Foutieve aanmeldgegevens</li>');
-												$('.fouten').fadeIn(1000);
+												$('.fouten').fadeIn(10000);
 											}
 										});
 								}
 							}
 
 							function bevestigReservaties() {
-								var combinatieVoorstellingsNummersAantalPlaatsen = window.sessionStorage.getItem('voorstellingsNummers') + '&' + window.sessionStorage.getItem('aantalPlaatsen');
+								var combinatieVoorstellingsNummersAantalPlaatsen = $.jStorage.get('voorstellingsNummers') + '&' + $.jStorage.get('aantalPlaatsen');
 								
 								//data bevat gelukte & mislukte reservaties
 								$.post('bevestig_reservatie/' + combinatieVoorstellingsNummersAantalPlaatsen,
@@ -162,10 +163,8 @@
 
 							function veranderKnoppenIngelogd() {
 								$('#gebruikerGegevens').fadeIn(1000);
-								if (window.sessionStorage
-										.getItem('voorstellingsNummers') !== null
-										&& window.sessionStorage
-												.getItem('voorstellingsNummers') !== '') {
+								if ($.jStorage.get('voorstellingsNummers') !== null
+										&& $.jStorage.get('voorstellingsNummers') !== '') {
 									$('#bevestigKnop').fadeIn(1000);
 								}
 								$('#gebruiker').hide();
@@ -174,7 +173,7 @@
 							}
 
 							function getSessionStorage() {
-								return window.sessionStorage.getItem('user');
+								return $.jStorage.get('user');
 							}
 						});
 	</script>

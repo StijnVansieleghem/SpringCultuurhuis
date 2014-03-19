@@ -71,4 +71,9 @@ public class Genre implements Serializable {
 	public int hashCode() {
 		return naam.toLowerCase().hashCode();
 	}
+	
+	@Override
+	public String toString(){
+		return "Genrenr: " + getGenreNr() + " Naam: " + getNaam();
+	}
 }

@@ -45,11 +45,11 @@
 
 			<ul class="nav nav-justified">
 				<li><a href="${voorstellingenURL}" title="Voorstellingen">Voorstellingen</a></li>
-				<c:if test="${not empty toonLinkReservatiemandje}">
-					<li><a href="${reservatiemandjeURL}" title="Reservatiemandje">Reservatiemandje</a></li>
-					<li><a href="${bevestig_reservatieURL}"
-						title="Bevestiging reservatie">Bevestiging reservatie</a></li>
-				</c:if>
+				<li class="reservatiemandjeSet"><a
+					href="${reservatiemandjeURL}" title="Reservatiemandje">Reservatiemandje</a></li>
+				<li class="reservatiemandjeSet"><a
+					href="${bevestig_reservatieURL}" title="Bevestiging reservatie">Bevestiging
+						reservatie</a></li>
 			</ul>
 		</div>
 
@@ -70,22 +70,19 @@
 							expression='voorstelling.prijs' /></span>
 				</p>
 				<p>
-					Vrije plaatsen: <br /> <span class="bold">${voorstelling.vrijePlaatsen}</span>
+					Vrije plaatsen: <br /> <span class="bold" id="vrijePlaatsen">${voorstelling.vrijePlaatsen}</span>
 				</p>
-				<form:form action="${reserverenURL}" method="post"
-					commandName="reservatieForm">
-					<form:label path="aantalPlaatsen">Plaatsen: </form:label>
-					<br />
-					<form:input path="aantalPlaatsen" id="aantalPlaatsen" type="number"
-						min="1" max="${voorstelling.vrijePlaatsen}" maxlength="4" size="4"
-						autofocus="autofocus" required="required" />
-					<br />
-					<input id="voorstellingsNr" name="voorstellingsNr" type="hidden"
-						value="${voorstelling.voorstellingsNr}" />
-					<br />
-					<input class="submit" id="submit" name="submit" type="submit"
-						value="Reserveren" />
-				</form:form>
+				<form action="post">
+					<!-- fix labels -->
+					<label for="aantalPlaatsen">Plaatsen: </label> <br /> <input
+						id="aantalPlaatsen" type="number" min="1"
+						max="${voorstelling.vrijePlaatsen}" maxlength="4" size="4"
+						autofocus="autofocus"
+						title="Hoeveel plaatsen wenst u te reserveren?"
+						required="required" /> <br /> <input id="voorstellingsNr"
+						type="hidden" value="${voorstelling.voorstellingsNr}" /> <br /> <input
+						id="submit" name="submit" type="submit" value="Reserveren" />
+				</form>
 			</c:if>
 		</div>
 
@@ -102,19 +99,21 @@
 	<!-- /container -->
 
 	<script
-		src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 	<script
-		src="https://raw.github.com/andris9/jStorage/master/jstorage.js"></script>
+		src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+	<script src="${contextPath}/js/jstorage.js"></script>
 
 	<script>
 		$('document').ready(
 				function() {
-					var voorstellingsNummers = window.sessionStorage
-							.getItem('voorstellingsNummers');
-					var aantalPlaatsen = window.sessionStorage
-							.getItem('aantalPlaatsen');
+					$('.reservatiemandjeSet').hide();
+					var voorstellingsNummers = $.jStorage
+							.get('voorstellingsNummers');
+					var aantalPlaatsen = $.jStorage.get('aantalPlaatsen');
+
 					if (voorstellingsNummers != null) {
+						$('.reservatiemandjeSet').show();
 						var arrVoorstellingsNummers = [];
 						arrVoorstellingsNummers = voorstellingsNummers
 								.split(',');
@@ -128,17 +127,18 @@
 
 					$('#submit').click(
 							function(event) {
-								if ($('#voorstellingsNr').val() !== ''
-										&& $('#aantalPlaatsen').val() !== '') {
+								event.preventDefault();
+								if ($.trim($('#aantalPlaatsen').val()) !== '' && $('#aantalPlaatsen').val() > 0 && $('#aantalPlaatsen').val() <= $('#vrijePlaatsen').html()) {
 									setReservatiemandje(voorstellingsNummers,
 											aantalPlaatsen);
+									window.location = '../reservatiemandje';
 								}
 							});
 
 					function setReservatiemandje(voorstellingsNummers,
 							aantalPlaatsen) {
-						if (voorstellingsNummers !== null
-								&& aantalPlaatsen !== null) {
+						if (voorstellingsNummers != null
+								&& aantalPlaatsen != null) {
 							var arrVoorstellingsNummers = [];
 							arrVoorstellingsNummers = voorstellingsNummers
 									.split(',');
@@ -151,25 +151,23 @@
 							if (positie === -1) {
 								voorstellingsNummers += ','
 										+ $('#voorstellingsNr').val();
-								window.sessionStorage.setItem(
-										'voorstellingsNummers',
+								$.jStorage.set('voorstellingsNummers',
 										voorstellingsNummers);
 								aantalPlaatsen += ','
 										+ $('#aantalPlaatsen').val();
-								window.sessionStorage.setItem('aantalPlaatsen',
-										aantalPlaatsen);
+								$.jStorage
+										.set('aantalPlaatsen', aantalPlaatsen);
 								i++;
 							} else {
 								arrAantalPlaatsen[positie] = $(
 										'#aantalPlaatsen').val();
-								window.sessionStorage.setItem('aantalPlaatsen',
+								$.jStorage.set('aantalPlaatsen',
 										arrAantalPlaatsen.join());
 							}
 						} else {
-							window.sessionStorage.setItem(
-									'voorstellingsNummers', $(
-											'#voorstellingsNr').val());
-							window.sessionStorage.setItem('aantalPlaatsen', $(
+							$.jStorage.set('voorstellingsNummers', $(
+									'#voorstellingsNr').val());
+							$.jStorage.set('aantalPlaatsen', $(
 									'#aantalPlaatsen').val());
 						}
 					}

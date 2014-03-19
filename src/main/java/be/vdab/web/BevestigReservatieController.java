@@ -69,6 +69,7 @@ class BevestigReservatieController {
 	@ResponseBody
 	String bevestigReservatie(
 			@PathVariable String combinatieVoorstellingsNummersAantalPlaatsen, Principal principal) {
+		//TODO: json
 		return maakOnderscheidGelukteMislukteReserveringen(principal, maakReservatiemandje(combinatieVoorstellingsNummersAantalPlaatsen));
 	}
 	

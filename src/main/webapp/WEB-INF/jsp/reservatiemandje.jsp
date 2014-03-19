@@ -85,17 +85,17 @@
 	<!-- /container -->
 
 	<script
-		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+	<script src="${contextPath}/js/jstorage.js"></script>
 	<script>
 		$('document')
 				.ready(
 						function() {
 							$('.fouten').hide();
 
-							var voorstellingsNummers = window.sessionStorage
-									.getItem('voorstellingsNummers');
-							var aantalPlaatsen = window.sessionStorage
-									.getItem('aantalPlaatsen');
+							var voorstellingsNummers = $.jStorage.get('voorstellingsNummers');
+							var aantalPlaatsen = $.jStorage.get('aantalPlaatsen');
 
 							var totaalPrijs = 0;
 							if ((voorstellingsNummers !== null && aantalPlaatsen !== null)
@@ -114,12 +114,13 @@
 										+"<td class='padded_right'>"+ data.titel +"</td>"
 										+"<td class='padded_right'>"+ data.uitvoerders +"</td>"
 										+"<td class='padded_right'>&euro; "+ data.prijs +"</td>"
-										//TODO: fix arrAantalPlaatsen[i]
+										//TODO: fix arrAantalPlaatsen[i] 
 										+"<td class='align_right padded_right'>x</td>"
 										+"<td><input id='voorstellingsNr' type='checkbox' value='' /></td>"
 										+"</tr>");
+										//evt. totaalprijs via rest service
 										totaalPrijs += data.prijs;
-									//}).done(function(){$('#totaalPrijs').val(totaalPrijs);
+									}).done(function(){$('#totaalPrijs').val(totaalPrijs);
 									});
 									i++;
 								});
@@ -129,13 +130,21 @@
 										'<li>Uw winkelmandje is leeg</li>');
 								$('.fouten').fadeIn(1000);
 							}
-							//alert(totaalPrijs);
-							$('#totaalPrijs').append(totaalPrijs)
+							alert(totaalPrijs);
+							$('#totaalPrijs').append(totaalPrijs);
 
 							$('#verwijderen').click(function(event) {
 								verwijderVoorstellingen(getValues());
 							});
-
+							
+							$('tr').click(function(){
+								//TODO: enkel tr's van tbody
+								$(this).parents('table').find('tr').each(function(index,element){
+									$(element).css({"background-color" : "#FFF"});
+								});
+								$(this).css({"background-color" : "#F0F0F0"});
+							});
+							
 							function getValues() {
 								var arrValues = [];
 								$('#voorstellingsNr:checked').each(function() {
@@ -149,12 +158,12 @@
 									var i = 0;
 									arrValues
 											.forEach(function(entry) {
+												//bgcolor aanpassen
+												$('tr:has(#voorstellingsNr:checked)').css({'background-color' : '#fb6c6c'});
 												$('tr:has(#voorstellingsNr:checked)')
 														.fadeOut(1000);
-												var voorstellingsNummers = window.sessionStorage
-														.getItem('voorstellingsNummers');
-												var aantalPlaatsen = window.sessionStorage
-														.getItem('aantalPlaatsen');
+												var voorstellingsNummers = $.jStorage.get('voorstellingsNummers');
+												var aantalPlaatsen = $.jStorage.get('aantalPlaatsen');
 
 												var arrVoorstellingsNummers = [];
 												arrVoorstellingsNummers = voorstellingsNummers
@@ -175,21 +184,20 @@
 															positie, 1);
 												}
 
-												window.sessionStorage.setItem(
+												$.jStorage.set(
 														'voorstellingsNummers',
 														arrVoorstellingsNummersKopie
 																.join());
-												window.sessionStorage.setItem(
+												$.jStorage.set(
 														'aantalPlaatsen',
 														arrAantalPlaatsen
 																.join());
 												i++;
 											});
-								}
-								;
-								if (window.sessionStorage
-										.getItem('voorstellingsNummers') === '') {
-									window.sessionStorage.clear();
+								};
+								if ($.jStorage.get('voorstellingsNummers') === '') {
+									$.jStorage.deleteKey('voorstellingsNummers');
+									$.jStorage.deleteKey('aantalPlaatsen');
 								}
 							}
 						});

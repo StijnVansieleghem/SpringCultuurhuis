@@ -81,4 +81,10 @@ public class Reservatie implements Serializable {
 		}
 		return total;
 	}
+
+	@Override
+	public String toString() {
+		return "Reservatienr: " + getReservatieNr() + " Aantal plaatsen: "
+				+ getPlaatsen() + " Voorstelling: " + voorstelling.toString();
+	}
 }

@@ -48,6 +48,7 @@ public class Klant extends Adres implements Serializable {
 	private Adres adres;
 	@Size(min = 1, max = 50)
 	private String gebruikersnaam;
+	@Size(min = 40, max = 40)
 	private String paswoord;
 	@Embedded
 	@Valid
@@ -140,8 +141,8 @@ public class Klant extends Adres implements Serializable {
 	public void setPaswoord(String paswoord) {
 		this.paswoord = hashPaswoord(paswoord);
 	}
-	
-	public String hashPaswoord(String paswoord){
+
+	public String hashPaswoord(String paswoord) {
 		ShaPasswordEncoder encoder = new ShaPasswordEncoder();
 		return encoder.encodePassword(paswoord, gebruikersnaam);
 	}

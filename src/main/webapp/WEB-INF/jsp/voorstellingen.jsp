@@ -103,11 +103,18 @@
 	<!-- /container -->
 
 	<script
-		src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 	<script>
+	//TODO: datepicker & autocomplete toevoegen
 		$('.row').hide();
 		$(document).ready(function() {
 			$('.row').slideDown(750);
+			$('tr').click(function(){
+				$(this).parents('table').find('tr').each(function(index,element){
+					$(element).css({"background-color" : "#FFF"});
+				});
+				$(this).css({"background-color" : "#F0F0F0"});
+			});
 		});
 	</script>
 
