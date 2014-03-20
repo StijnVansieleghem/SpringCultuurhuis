@@ -33,4 +33,9 @@ class VoorstellingServiceImpl implements VoorstellingService {
 	public Iterable<Voorstelling> findAll(Iterable<Long> voorstellingsNrs){
 		return voorstellingDAO.findAll(voorstellingsNrs);
 	}
+	
+	@Override
+	public Iterable<Voorstelling> findByDatumStartingWith(Date datum){
+		return voorstellingDAO.findByDatumStartingWith(datum);
+	}
 }

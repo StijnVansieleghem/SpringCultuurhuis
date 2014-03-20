@@ -53,15 +53,19 @@
 				<form action="${reservatiemandjeURL}" id="verwijderReservatie"
 					method="post">
 					<table>
-						<tr>
-							<th class="padded_right">Datum</th>
-							<th class="padded_right">Titel</th>
-							<th class="padded_right">Uitvoerders</th>
-							<th class="padded_right">Prijs</th>
-							<th class="padded_right">Plaatsen</th>
-							<th><input id="verwijderen" name="verwijderen" type="button"
-								value="verwijderen" /></th>
-						</tr>
+						<thead>
+							<tr>
+								<th class="padded_right">Datum</th>
+								<th class="padded_right">Titel</th>
+								<th class="padded_right">Uitvoerders</th>
+								<th class="padded_right">Prijs</th>
+								<th class="padded_right">Plaatsen</th>
+								<th><input id="verwijderen" name="verwijderen"
+									type="button" value="verwijderen" /></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
 					</table>
 				</form>
 				<p>
@@ -86,65 +90,78 @@
 
 	<script
 		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+	<script
+		src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
 	<script src="${contextPath}/js/jstorage.js"></script>
+	<script 
+		src="http://momentjs.com/downloads/moment-with-langs.min.js"></script>
 	<script>
 		$('document')
 				.ready(
 						function() {
 							$('.fouten').hide();
 
-							var voorstellingsNummers = $.jStorage.get('voorstellingsNummers');
-							var aantalPlaatsen = $.jStorage.get('aantalPlaatsen');
+							var voorstellingsNummers = $.jStorage
+									.get('voorstellingsNummers');
+							var aantalPlaatsen = $.jStorage
+									.get('aantalPlaatsen');
 
 							var totaalPrijs = 0;
 							if ((voorstellingsNummers !== null && aantalPlaatsen !== null)
 									&& (voorstellingsNummers !== '' && aantalPlaatsen !== '')) {
 								var arrVoorstellingsNummers = [];
-								arrVoorstellingsNummers = voorstellingsNummers.split(',');
+								arrVoorstellingsNummers = voorstellingsNummers
+										.split(',');
 								var arrAantalPlaatsen = [];
 								arrAantalPlaatsen = aantalPlaatsen.split(',');
 								var i = 0;
-								arrVoorstellingsNummers.forEach(function(entry){
-									$.getJSON('reservatiemandje/' + arrVoorstellingsNummers[i], 
-										function(data) {
-										$('table').append(
-										"<tr>"
-										+"<td class='padded_right'>"+ data.datum +"</td>"
-										+"<td class='padded_right'>"+ data.titel +"</td>"
-										+"<td class='padded_right'>"+ data.uitvoerders +"</td>"
-										+"<td class='padded_right'>&euro; "+ data.prijs +"</td>"
-										//TODO: fix arrAantalPlaatsen[i] 
-										+"<td class='align_right padded_right'>x</td>"
-										+"<td><input id='voorstellingsNr' type='checkbox' value='' /></td>"
-										+"</tr>");
-										//evt. totaalprijs via rest service
-										totaalPrijs += data.prijs;
-									}).done(function(){$('#totaalPrijs').val(totaalPrijs);
-									});
-									i++;
-								});
+								arrVoorstellingsNummers
+										.forEach(function(entry) {
+											$
+													.getJSON(
+															'reservatiemandje/'
+																	+ arrVoorstellingsNummers[i],
+															function(data) {
+																var positie = $.inArray(data.voorstellingsNr.toString(),arrVoorstellingsNummers);
+																alert(data.datum);
+																$('table>tbody')
+																		.append(
+																				"<tr>"
+																						+ "<td class='padded_right'>"
+																						+ moment(data.datum).format('YYYY-MM-DD HH:mm')
+																						+ "</td>"
+																						+ "<td class='padded_right'>"
+																						+ data.titel
+																						+ "</td>"
+																						+ "<td class='padded_right'>"
+																						+ data.uitvoerders
+																						+ "</td>"
+																						+ "<td class='padded_right'>&euro; "
+																						+ data.prijs
+																						+ "</td>"
+																						+ "<td class='align_right padded_right'>" 
+																						+ arrAantalPlaatsen[positie] 
+																						+ "</td>"
+																						+ "<td><input id='voorstellingsNr' type='checkbox' value='' /></td>"
+																						+ "</tr>");
+																totaalPrijs += data.prijs * arrAantalPlaatsen[positie];
+															}).done(function() {
+																//TODO: bereken totaalprijs via rest service
+																	$('#totaalPrijs').html(totaalPrijs);			
+															});
+											i++;
+										});
 							} else {
 								$('#reservatiemandje').hide();
 								$('.fouten').append(
 										'<li>Uw winkelmandje is leeg</li>');
 								$('.fouten').fadeIn(1000);
 							}
-							alert(totaalPrijs);
-							$('#totaalPrijs').append(totaalPrijs);
-
+							
 							$('#verwijderen').click(function(event) {
 								verwijderVoorstellingen(getValues());
 							});
-							
-							$('tr').click(function(){
-								//TODO: enkel tr's van tbody
-								$(this).parents('table').find('tr').each(function(index,element){
-									$(element).css({"background-color" : "#FFF"});
-								});
-								$(this).css({"background-color" : "#F0F0F0"});
-							});
-							
+
 							function getValues() {
 								var arrValues = [];
 								$('#voorstellingsNr:checked').each(function() {
@@ -156,15 +173,22 @@
 							function verwijderVoorstellingen(arrValues) {
 								if (arrValues.length != 0) {
 									var i = 0;
-									arrValues
-											.forEach(function(entry) {
+									arrValues.forEach(function(entry) {
 												//bgcolor aanpassen
-												$('tr:has(#voorstellingsNr:checked)').css({'background-color' : '#fb6c6c'});
-												$('tr:has(#voorstellingsNr:checked)')
+												$(
+														'tr:has(#voorstellingsNr:checked)')
+														.css(
+																{
+																	'background-color' : '#fb6c6c'
+																});
+												$(
+														'tr:has(#voorstellingsNr:checked)')
 														.fadeOut(1000);
-												var voorstellingsNummers = $.jStorage.get('voorstellingsNummers');
-												var aantalPlaatsen = $.jStorage.get('aantalPlaatsen');
-
+												
+												var voorstellingsNummers = $.jStorage
+														.get('voorstellingsNummers');
+												var aantalPlaatsen = $.jStorage
+														.get('aantalPlaatsen');
 												var arrVoorstellingsNummers = [];
 												arrVoorstellingsNummers = voorstellingsNummers
 														.split(',');
@@ -174,7 +198,8 @@
 														.split(',');
 
 												var arrVoorstellingsNummersKopie = arrVoorstellingsNummers;
-												var positie = $.inArray(arrValues[i],
+												var positie = $
+														.inArray(arrValues[i],
 																arrVoorstellingsNummers);
 
 												if (positie === -1) {
@@ -194,9 +219,11 @@
 																.join());
 												i++;
 											});
-								};
+								}
+								;
 								if ($.jStorage.get('voorstellingsNummers') === '') {
-									$.jStorage.deleteKey('voorstellingsNummers');
+									$.jStorage
+											.deleteKey('voorstellingsNummers');
 									$.jStorage.deleteKey('aantalPlaatsen');
 								}
 							}

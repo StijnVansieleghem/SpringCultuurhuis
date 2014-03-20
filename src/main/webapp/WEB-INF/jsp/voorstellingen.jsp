@@ -13,7 +13,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="Stijn Vansieleghem">
+<style>
+.ui-datepicker-next {
+	display: none;
+}
 
+.ui-datepicker-prev {
+	display: none;
+}
+</style>
 <title>CultuurHuis - Voorstellingen</title>
 
 <!-- Bootstrap core CSS -->
@@ -53,30 +61,34 @@
 				<c:choose>
 					<c:when test="${not empty voorstellingen}">
 						<table>
-							<tr>
-								<th class="padded_right">Datum</th>
-								<th class="padded_right">Titel</th>
-								<th class="padded_right">Uitvoerders</th>
-								<th class="padded_right">Prijs</th>
-								<th class="padded_right">Vrije Plaatsen</th>
-								<th>Reserveren</th>
-							</tr>
-							<c:forEach var="voorstelling" items="${voorstellingen}">
+							<thead>
 								<tr>
-									<td class="padded_right"><spring:eval
-											expression='voorstelling.datum' /></td>
-									<td class="padded_right">${voorstelling.titel}</td>
-									<td class="padded_right">${voorstelling.uitvoerders}</td>
-									<td class="padded_right">&euro; <spring:eval
-											expression='voorstelling.prijs' /></td>
-									<td class="align_right padded_right">${voorstelling.vrijePlaatsen}</td>
-									<td><c:if test="${voorstelling.vrijePlaatsen != 0}">
-											<c:url value='/reserveren/${voorstelling.voorstellingsNr}'
-												var='reservatieURL' />
-											<a href='${reservatieURL}'>reserveren</a>
-										</c:if></td>
+									<th class="padded_right">Datum</th>
+									<th class="padded_right">Titel</th>
+									<th class="padded_right">Uitvoerders</th>
+									<th class="padded_right">Prijs</th>
+									<th class="padded_right">Vrije Plaatsen</th>
+									<th>Reserveren</th>
 								</tr>
-							</c:forEach>
+							</thead>
+							<tbody>
+								<c:forEach var="voorstelling" items="${voorstellingen}">
+									<tr>
+										<td class="padded_right"><spring:eval
+												expression='voorstelling.datum' /></td>
+										<td class="padded_right">${voorstelling.titel}</td>
+										<td class="padded_right">${voorstelling.uitvoerders}</td>
+										<td class="padded_right">&euro; <spring:eval
+												expression='voorstelling.prijs' /></td>
+										<td class="align_right padded_right">${voorstelling.vrijePlaatsen}</td>
+										<td><c:if test="${voorstelling.vrijePlaatsen != 0}">
+												<c:url value='/reserveren/${voorstelling.voorstellingsNr}'
+													var='reservatieURL' />
+												<a href='${reservatieURL}'>reserveren</a>
+											</c:if></td>
+									</tr>
+								</c:forEach>
+							</tbody>
 						</table>
 					</c:when>
 					<c:otherwise>
@@ -84,10 +96,10 @@
 					</c:otherwise>
 				</c:choose>
 			</c:if>
-
-			<c:if test="${not empty fouten}">
-				<p class="fouten">${fouten}</p>
-			</c:if>
+			<form>
+				<input id="datum" maxlength="10" size="10" type="text" /> <input
+					id="submit" type="button" value="Sorteer" />
+			</form>
 		</div>
 
 		<!-- Site footer -->
@@ -104,18 +116,64 @@
 
 	<script
 		src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<script
+		src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+	<script 
+		src="http://momentjs.com/downloads/moment-with-langs.min.js"></script>
 	<script>
-	//TODO: datepicker & autocomplete toevoegen
+		//TODO: autocomplete toevoegen
 		$('.row').hide();
 		$(document).ready(function() {
 			$('.row').slideDown(750);
-			$('tr').click(function(){
-				$(this).parents('table').find('tr').each(function(index,element){
-					$(element).css({"background-color" : "#FFF"});
-				});
-				$(this).css({"background-color" : "#F0F0F0"});
+			$('#datum').datepicker({
+				inline: true,
+				dateFormat : 'yy-mm-dd',
+				yearRange : '-1:+1',
+				changeMonth : true,
+				changeYear: true,
+				showAnim: 'slideDown', 
+				duration: '750',
+				beforeShow: function(){
+					$('#voorstellingen').css({
+						'height' : $('#voorstellingen').height() + 200
+					});
+				},
+				onClose: function(){
+					$('#voorstellingen').css({
+						'height' : $('#voorstellingen').height() - 170
+					});	
+				},
+			});
+			$('#submit').click(function() {
+				if(moment($('#datum').val()).isValid()){
+					$.getJSON('rest/' + $('#datum').val(), function(data) {
+						$('#voorstellingen').html(
+								"<tr>"
+								+ "<td class='padded_right'>"
+								+ moment(data.datum).format('YYYY-M-D h:mm')
+								+ "</td>"
+								+ "<td class='padded_right'>"
+								+ data.titel
+								+ "</td>"
+								+ "<td class='padded_right'>"
+								+ data.uitvoerders
+								+ "</td>"
+								+ "<td class='padded_right'>&euro; "
+								+ data.prijs
+								+ "</td>"
+								+ "<td class='align_right padded_right'>"
+								+ data.vrijePlaatsen
+								+ "</td>"
+								+ "<td>"
+								+ "<a href='/reserveren/"+ data.voorstellingsNr + "'>Reserveren</a>"
+								+ "</td>"
+								+ "</tr>"
+						);
+					});
+				}
 			});
 		});
+			//			$('#datum').change(function(){});
 	</script>
 
 	<!-- Bootstrap core JavaScript

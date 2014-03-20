@@ -157,7 +157,6 @@
 										+ $('#aantalPlaatsen').val();
 								$.jStorage
 										.set('aantalPlaatsen', aantalPlaatsen);
-								i++;
 							} else {
 								arrAantalPlaatsen[positie] = $(
 										'#aantalPlaatsen').val();
@@ -170,8 +169,7 @@
 							$.jStorage.set('aantalPlaatsen', $(
 									'#aantalPlaatsen').val());
 						}
-					}
-					;
+					};
 				});
 	</script>
 

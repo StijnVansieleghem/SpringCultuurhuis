@@ -29,7 +29,6 @@ public class Voorstelling implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
-	@JsonIgnore
 	private long voorstellingsNr;
 	@Size(min = 1, max = 50)
 	private String titel;
@@ -40,7 +39,6 @@ public class Voorstelling implements Serializable {
 	private Date datum;
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal prijs;
-	@JsonIgnore
 	private int vrijePlaatsen;
 
 	@ManyToOne(fetch = FetchType.LAZY)
