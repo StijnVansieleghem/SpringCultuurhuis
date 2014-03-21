@@ -35,7 +35,7 @@ class VoorstellingServiceImpl implements VoorstellingService {
 	}
 	
 	@Override
-	public Iterable<Voorstelling> findByDatumStartingWith(Date datum){
-		return voorstellingDAO.findByDatumStartingWith(datum);
+	public Iterable<Voorstelling> findByDatumBetween(Date datum, Date datumEindeDag){
+		return voorstellingDAO.findByDatumBetween(datum, datumEindeDag);
 	}
 }

@@ -58,11 +58,11 @@
 						id="gebruikersnaamVeld" name="j_username" type="text" autofocus
 						required /></label><br /> <label>Paswoord<br /> <input
 						maxlength="50" id="paswoordVeld" name="j_password" type="password"
-						required /></label><br /> <input id="zoekGebruiker" name="zoekGebruiker"
+						required /></label><br /> <input class="btn btn-sm btn-primary" id="zoekGebruiker" name="zoekGebruiker"
 						type="button" value="Zoek me op" />
 				</form>
 				<br />
-				<button id="nieuweGebruiker">Ik ben nieuw</button>
+				<button class="btn btn-sm btn-primary"  id="nieuweGebruiker">Ik ben nieuw</button>
 			</div>
 			<br />
 			<p>
@@ -72,7 +72,7 @@
 			</ul>
 			<div id="bevestigKnop">
 				<h2>Stap 2: Bevestigen</h2>
-				<button id="bevestigKnop">Bevestigen</button>
+				<button class="btn btn-sm btn-primary" id="bevestigKnop">Bevestigen</button>
 			</div>
 		</div>
 

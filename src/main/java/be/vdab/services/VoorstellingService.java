@@ -9,5 +9,5 @@ public interface VoorstellingService {
 	Voorstelling read(long id);
 	Iterable<Voorstelling> findByGenreAndDatumGreaterThan(Genre genre, Date currDate);
 	Iterable<Voorstelling> findAll(Iterable<Long> voorstellingsNrs);
-	Iterable<Voorstelling> findByDatumStartingWith(Date datum);
+	Iterable<Voorstelling> findByDatumBetween(Date datum, Date datumEindeDag);
 }

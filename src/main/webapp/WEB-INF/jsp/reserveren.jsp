@@ -81,7 +81,7 @@
 						title="Hoeveel plaatsen wenst u te reserveren?"
 						required="required" /> <br /> <input id="voorstellingsNr"
 						type="hidden" value="${voorstelling.voorstellingsNr}" /> <br /> <input
-						id="submit" name="submit" type="submit" value="Reserveren" />
+						class="btn btn-sm btn-primary" id="submit" name="submit" type="submit" value="Reserveren" />
 				</form>
 			</c:if>
 		</div>
@@ -122,7 +122,11 @@
 
 						var positie = arrVoorstellingsNummers.indexOf($(
 								'#voorstellingsNr').val());
-						$('#aantalPlaatsen').val(arrAantalPlaatsen[positie]);
+						if(arrAantalPlaatsen[positie]){
+							$('#aantalPlaatsen').val(arrAantalPlaatsen[positie]);
+						}else{
+							$('#aantalPlaatsen').val(1);
+						}
 					}
 
 					$('#submit').click(

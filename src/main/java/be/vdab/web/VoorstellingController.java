@@ -1,11 +1,10 @@
 package be.vdab.web;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,8 @@ import be.vdab.entities.Genre;
 import be.vdab.entities.Voorstelling;
 import be.vdab.services.GenreService;
 import be.vdab.services.VoorstellingService;
+
+import com.ibm.icu.util.Calendar;
 
 @Controller
 @RequestMapping({ "/", "/voorstellingen" })
@@ -54,16 +55,12 @@ class VoorstellingController {
 		return modelAndView;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/rest/{parameter}")
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/{datum}")
 	public @ResponseBody
-	Iterable<Voorstelling> getVoorstellingByDatum(@PathVariable String parameter) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date datum = new Date();
-		try {
-			datum = formatter.parse(parameter);
-			return voorstellingService.findByDatumStartingWith(datum);
-		} catch (ParseException e) {
-			return new ArrayList<Voorstelling>();
-		}
+	Iterable<Voorstelling> getVoorstellingByDatum(@PathVariable @DateTimeFormat(iso=ISO.DATE) Date datum) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(datum);
+		cal.add(Calendar.HOUR, +24);
+		return voorstellingService.findByDatumBetween(datum, cal.getTime());
 	}
 }

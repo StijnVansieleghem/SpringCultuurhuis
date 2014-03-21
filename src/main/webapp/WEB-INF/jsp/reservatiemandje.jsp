@@ -60,7 +60,7 @@
 								<th class="padded_right">Uitvoerders</th>
 								<th class="padded_right">Prijs</th>
 								<th class="padded_right">Plaatsen</th>
-								<th><input id="verwijderen" name="verwijderen"
+								<th><input class="btn btn-xs btn-danger" id="verwijderen" name="verwijderen"
 									type="button" value="verwijderen" /></th>
 							</tr>
 						</thead>
@@ -123,7 +123,6 @@
 																	+ arrVoorstellingsNummers[i],
 															function(data) {
 																var positie = $.inArray(data.voorstellingsNr.toString(),arrVoorstellingsNummers);
-																alert(data.datum);
 																$('table>tbody')
 																		.append(
 																				"<tr>"
@@ -174,12 +173,11 @@
 								if (arrValues.length != 0) {
 									var i = 0;
 									arrValues.forEach(function(entry) {
-												//bgcolor aanpassen
 												$(
 														'tr:has(#voorstellingsNr:checked)')
 														.css(
 																{
-																	'background-color' : '#fb6c6c'
+																	'background-color' : '#d2322d'
 																});
 												$(
 														'tr:has(#voorstellingsNr:checked)')
